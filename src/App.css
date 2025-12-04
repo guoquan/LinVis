@@ -1,1 +1,95 @@
-/* Empty */
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Layout Container */
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Canvas Area */
+.canvas-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sidebar Container */
+.sidebar-container {
+  width: 340px; /* Slightly wider for touch targets */
+  height: 100%;
+  background: #2a2a2a;
+  z-index: 100;
+  flex-shrink: 0;
+  position: relative;
+  border-left: 1px solid #444;
+  transition: transform 0.3s ease;
+}
+
+/* Toggle Button (Hidden on Desktop usually, but we can keep it if we want collapsible sidebar) */
+.menu-btn {
+  display: none; /* Hidden by default on desktop if we want fixed sidebar */
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 50;
+  background: rgba(42, 42, 42, 0.8);
+  border: 1px solid #555;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Mobile / Tablet Styles */
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 85%; /* Take up most of screen but leave a gap */
+    max-width: 340px;
+    transform: translateX(100%); /* Hidden by default */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+  }
+
+  .sidebar-container.open {
+    transform: translateX(0);
+  }
+
+  .menu-btn {
+    display: block; /* Show on mobile */
+  }
+  
+  /* Overlay when sidebar is open */
+  .sidebar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  
+  .sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

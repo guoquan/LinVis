@@ -89,11 +89,21 @@ function App() {
   const [targetVector, setTargetVector] = useState<Vector3>([1, 1, 1]);
   const [autoRotate, setAutoRotate] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', overflow: 'hidden' }}>
+    <div className="app-container">
+      {/* Mobile Menu Button */}
+      <button 
+        className="menu-btn"
+        onClick={() => setSidebarOpen(true)}
+        aria-label="Open Settings"
+      >
+        ☰
+      </button>
+
       {/* 3D Viewport */}
-      <div style={{ flex: 1, position: 'relative' }}>
+      <div className="canvas-container">
         <Canvas camera={{ position: [6, 6, 4], fov: 50, up: [0, 0, 1] }}>
           <color attach="background" args={['#1a1a1a']} />
           <Scene 
@@ -104,13 +114,19 @@ function App() {
           />
         </Canvas>
         
-        <div style={{ position: 'absolute', top: 20, left: 20, color: 'white', pointerEvents: 'none', fontFamily: 'sans-serif' }}>
-          <h1 style={{ margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>Linear Algebra Vis</h1>
+        <div style={{ position: 'absolute', top: 20, left: 20, color: 'white', pointerEvents: 'none', fontFamily: 'sans-serif', zIndex: 10 }}>
+          <h1 style={{ margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '24px' }}>Linear Vis</h1>
         </div>
+        
+        {/* Overlay for mobile */}
+        <div 
+          className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`} 
+          onClick={() => setSidebarOpen(false)}
+        />
       </div>
       
       {/* Sidebar */}
-      <div style={{ width: '320px', height: '100%' }}>
+      <div className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
          <Sidebar 
             vectors={vectors} 
             setVectors={setVectors} 
@@ -119,6 +135,7 @@ function App() {
             autoRotate={autoRotate}
             onToggleRotate={() => setAutoRotate(!autoRotate)}
             onResetView={() => setResetTrigger(t => t + 1)}
+            onClose={() => setSidebarOpen(false)}
          />
       </div>
     </div>

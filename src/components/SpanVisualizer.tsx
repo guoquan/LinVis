@@ -23,12 +23,12 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
             {/* Core line */}
             <mesh>
                 <cylinderGeometry args={[0.02, 0.02, 200, 8]} /> {/* Thinner */}
-                <meshBasicMaterial color={SPAN_VIS_COLOR} opacity={0.8} transparent />
+                <meshBasicMaterial color={color} opacity={0.8} transparent />
             </mesh>
             {/* Faint glow/guide */}
             <mesh>
                 <cylinderGeometry args={[0.05, 0.05, 200, 8]} /> 
-                <meshBasicMaterial color={SPAN_VIS_COLOR} opacity={0.2} transparent depthWrite={false} />
+                <meshBasicMaterial color={color} opacity={0.2} transparent depthWrite={false} />
             </mesh>
         </group>
     );
@@ -63,12 +63,12 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={SPAN_VIS_COLOR} opacity={0.6} transparent linewidth={1} /> {/* Standard width */}
+                <lineBasicMaterial color={color} opacity={0.6} transparent linewidth={1} /> {/* Standard width */}
             </lineSegments>
             {/* Semi-transparent backing plane */}
             <mesh quaternion={planeQuat}>
                 <planeGeometry args={[100, 100]} />
-                <meshStandardMaterial color={SPAN_VIS_COLOR} opacity={0.15} transparent side={THREE.DoubleSide} depthWrite={false} />
+                <meshStandardMaterial color={color} opacity={0.15} transparent side={THREE.DoubleSide} depthWrite={false} />
             </mesh>
           </group>
       );
@@ -115,7 +115,7 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={SPAN_VIS_COLOR} opacity={0.3} transparent linewidth={1} /> {/* Standard width */}
+                <lineBasicMaterial color={color} opacity={0.3} transparent linewidth={1} /> {/* Standard width */}
             </lineSegments>
           </group>
       );

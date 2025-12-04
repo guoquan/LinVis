@@ -8,11 +8,12 @@ interface SidebarProps {
   autoRotate: boolean;
   onToggleRotate: () => void;
   onResetView: () => void;
+  onClose?: () => void;
 }
 
 export function Sidebar({ 
   vectors, setVectors, targetVector, setTargetVector,
-  autoRotate, onToggleRotate, onResetView 
+  autoRotate, onToggleRotate, onResetView, onClose 
 }: SidebarProps) {
   const rank = calculateRank(vectors);
   const independent = isLinearlyIndependent(vectors);
@@ -53,9 +54,31 @@ export function Sidebar({
       boxSizing: 'border-box',
       overflowY: 'auto',
       fontFamily: 'sans-serif',
-      boxShadow: '-2px 0 10px rgba(0,0,0,0.5)'
+      boxShadow: '-2px 0 10px rgba(0,0,0,0.5)',
+      position: 'relative'
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      {onClose && (
+        <button 
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '15px',
+            right: '15px',
+            background: 'transparent',
+            border: 'none',
+            color: '#aaa',
+            fontSize: '24px',
+            cursor: 'pointer',
+            padding: '5px',
+            lineHeight: 0.8
+          }}
+          title="Close Sidebar"
+        >
+          &times;
+        </button>
+      )}
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingRight: onClose ? '30px' : '0' }}>
         <h2 style={{ margin: 0 }}>Controls</h2>
         <div style={{ display: 'flex', gap: '10px' }}>
             <button 
