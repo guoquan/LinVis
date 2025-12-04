@@ -1,5 +1,7 @@
 # 3D Linear Algebra Visualization (LinVis)
 
+[English](README.md) | [中文](README_zh.md)
+
 A web-based interactive tool designed to visualize fundamental linear algebra concepts in 3D space. This project is built with **React**, **Three.js** (@react-three/fiber), and **TypeScript**.
 
 🔗 **Live Demo:** [https://guoquan.github.io/LinVis/](https://guoquan.github.io/LinVis/)
