@@ -24,7 +24,6 @@ export function Sidebar({
 
   // Determine span status for each target vector
   const spanStatuses = targetVectors.map(v => isInSpan(vectors, v));
-  const allInSpan = spanStatuses.every(s => s);
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'zh' : 'en');
@@ -214,7 +213,7 @@ export function Sidebar({
 
         <div style={{ borderTop: '1px solid #555', marginTop: '10px', paddingTop: '5px' }}>
             <div style={{ marginBottom: '5px' }}>{t('targetInSpan')}:</div>
-            {targetVectors.map((v, i) => {
+            {targetVectors.map((_, i) => {
                 const inS = spanStatuses[i];
                 const color = TARGET_COLORS[i % TARGET_COLORS.length];
                 return (

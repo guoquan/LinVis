@@ -118,7 +118,7 @@ function ThickAxes({ length, thickness }: { length: number, thickness: number })
 }
 
 function App() {
-  const { t } = useLanguage();
+  useLanguage();
   const [vectors, setVectors] = useState<Vector3[]>([
     [2, 0, 0], 
     [0, 2, 0]
