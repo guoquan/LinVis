@@ -1,0 +1,55 @@
+export const translations = {
+  en: {
+    appTitle: "LinVis",
+    controls: "Controls",
+    resetView: "Reset View",
+    autoRotate: "Auto Rotate",
+    targetVectors: "Target Vectors (b)",
+    basisVectors: "Basis Vectors (A)",
+    addCol: "+ Col",
+    addTarget: "+ Target",
+    analysis: "Analysis",
+    rank: "Rank",
+    linearIndep: "Linear Indep.",
+    yes: "Yes",
+    no: "No",
+    targetInSpan: "Target in Span",
+    dependenciesFound: "Dependencies Found",
+    zeroVector: "is Zero Vector",
+    isDependent: "is dependent",
+    instructions: "Instructions:",
+    instruction1: "Blue vectors are basis columns of A.",
+    instruction2: "Red vector is the target b.",
+    instruction3: "Magenta shape represents the Span(A).",
+    instruction4: "Drag to rotate, Scroll to zoom.",
+    emptyMatrix: "Empty Matrix"
+  },
+  zh: {
+    appTitle: "LinVis",
+    controls: "控制面板",
+    resetView: "复位视角",
+    autoRotate: "自动旋转",
+    targetVectors: "目标向量组 (b)",
+    basisVectors: "基向量组 (A)",
+    addCol: "+ 列",
+    addTarget: "+ 目标",
+    analysis: "分析结果",
+    rank: "秩 (Rank)",
+    linearIndep: "线性无关",
+    yes: "是",
+    no: "否",
+    targetInSpan: "目标在空间内",
+    dependenciesFound: "发现线性相关",
+    zeroVector: "是零向量",
+    isDependent: "是线性相关的",
+    instructions: "说明:",
+    instruction1: "蓝色箭头为矩阵 A 的列向量 (基)。",
+    instruction2: "红色箭头为目标向量 b。",
+    instruction3: "品红色形状代表 A 的张成空间 Span(A)。",
+    instruction4: "拖拽旋转视角，滚轮缩放。",
+    emptyMatrix: "空矩阵"
+  }
+};
+
+export type Language = 'en' | 'zh';
+export type TranslationKey = keyof typeof translations.en;

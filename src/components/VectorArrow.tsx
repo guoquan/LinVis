@@ -30,11 +30,11 @@ export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }
 
   if (length < 0.0001) return null;
 
-  // Visual configuration (refined thickness)
-  const headLength = Math.min(length * 0.2, 0.6); 
-  const headWidth = Math.min(headLength * 0.5, 0.3); 
-  const shaftLength = length - headLength;
-  const shaftRadius = Math.max(headWidth * 0.3, 0.03); 
+  // Visual configuration (Fixed thickness for consistency)
+  const headLength = 0.4; 
+  const headWidth = 0.2; 
+  const shaftLength = Math.max(0, length - headLength);
+  const shaftRadius = 0.04; 
 
   return (
     <group position={start} quaternion={quaternion}>
@@ -54,29 +54,35 @@ export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }
       {label && (
         <Html position={[0, length + 0.2, 0]} center zIndexRange={[100, 0]}>
           <div style={{ 
-            color: color, 
-            background: 'rgba(0,0,0,0.8)', // Increased opacity
-            padding: '5px', 
-            borderRadius: '4px',
-            fontSize: '14px', // Increased font size
-            fontFamily: 'monospace',
-            pointerEvents: 'none',
-            userSelect: 'none',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            border: `1px solid ${color}`,
-            minWidth: '30px',
-            marginBottom: '10px'
+            marginBottom: '10px',
+            pointerEvents: 'none',
+            userSelect: 'none',
           }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>{label}</div>
+            <div style={{ 
+                color: color, 
+                fontWeight: 'bold', 
+                marginBottom: '2px',
+                background: 'rgba(0,0,0,0.6)',
+                padding: '0 4px',
+                borderRadius: '2px',
+                fontSize: '14px'
+            }}>{label}</div>
+            
             <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                borderLeft: '1px solid #aaa',
-                borderRight: '1px solid #aaa',
-                padding: '0 4px',
+                borderLeft: `2px solid ${color}`,
+                borderRight: `2px solid ${color}`,
+                borderRadius: '8px', // Brackets look
+                padding: '2px 6px',
+                background: 'rgba(0,0,0,0.7)',
+                fontFamily: 'monospace',
+                color: '#fff',
+                fontSize: '12px',
                 lineHeight: '1.2'
             }}>
                <span>{parseFloat((end[0] - start[0]).toFixed(2))}</span>

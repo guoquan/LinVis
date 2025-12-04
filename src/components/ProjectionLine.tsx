@@ -6,9 +6,10 @@ import { calculateRank, isInSpan, type Vector3 } from '../utils/linearAlgebra';
 interface ProjectionLineProps {
   basisVectors: Vector3[];
   targetVector: Vector3;
+  color?: string;
 }
 
-export function ProjectionLine({ basisVectors, targetVector }: ProjectionLineProps) {
+export function ProjectionLine({ basisVectors, targetVector, color = '#ffff00' }: ProjectionLineProps) {
   const rank = useMemo(() => calculateRank(basisVectors), [basisVectors]);
   const shouldRender = useMemo(() => {
     const inSpan = isInSpan(basisVectors, targetVector);
@@ -68,14 +69,21 @@ export function ProjectionLine({ basisVectors, targetVector }: ProjectionLinePro
   if (!shouldRender || !projection) return null;
 
   return (
-    <Line
-      points={[targetVector, projection.toArray()]} // Line from target to its projection
-      color="#ffff00" // Yellow for projection line
-      lineWidth={2} 
-      dashed={true}
-      dashScale={1}
-      dashSize={0.2}
-      gapSize={0.1}
-    />
+    <group>
+        <Line
+        points={[targetVector, projection.toArray()]} // Line from target to its projection
+        color={color} 
+        lineWidth={2} 
+        dashed={true}
+        dashScale={1}
+        dashSize={0.2}
+        gapSize={0.1}
+        />
+        {/* Marker at the foot of the perpendicular */}
+        <mesh position={projection}>
+            <sphereGeometry args={[0.05, 16, 16]} /> {/* Reduced radius */}
+            <meshBasicMaterial color={color} />
+        </mesh>
+    </group>
   );
 }

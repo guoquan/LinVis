@@ -22,12 +22,12 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
         <group quaternion={quaternion}>
             {/* Core line */}
             <mesh>
-                <cylinderGeometry args={[0.02, 0.02, 200, 8]} /> {/* Thinner */}
+                <cylinderGeometry args={[0.03, 0.03, 200, 8]} /> {/* Increased thickness */}
                 <meshBasicMaterial color={color} opacity={0.8} transparent />
             </mesh>
             {/* Faint glow/guide */}
             <mesh>
-                <cylinderGeometry args={[0.05, 0.05, 200, 8]} /> 
+                <cylinderGeometry args={[0.06, 0.06, 200, 8]} /> 
                 <meshBasicMaterial color={color} opacity={0.2} transparent depthWrite={false} />
             </mesh>
         </group>
@@ -63,7 +63,7 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={color} opacity={0.6} transparent linewidth={1} /> {/* Standard width */}
+                <lineBasicMaterial color={color} opacity={0.6} transparent linewidth={4} /> {/* Increased linewidth */}
             </lineSegments>
             {/* Semi-transparent backing plane */}
             <mesh quaternion={planeQuat}>
@@ -115,7 +115,7 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={color} opacity={0.3} transparent linewidth={1} /> {/* Standard width */}
+                <lineBasicMaterial color={color} opacity={0.3} transparent linewidth={3} /> {/* Increased linewidth */}
             </lineSegments>
           </group>
       );

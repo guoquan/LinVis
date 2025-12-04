@@ -8,21 +8,22 @@ import { SpanVisualizer } from './components/SpanVisualizer';
 import { ProjectionLine } from './components/ProjectionLine';
 import { AxisLabels } from './components/AxisLabels';
 import { type Vector3 } from './utils/linearAlgebra';
+import { useLanguage } from './contexts/LanguageContext';
 import './App.css';
 
 // Define color constants for better visibility on projectors
 export const BASIS_VECTOR_COLOR = '#00FFFF'; // Aqua / Cyan
-export const TARGET_VECTOR_COLOR = '#FF4500'; // OrangeRed
 export const SPAN_VIS_COLOR = '#FF00FF';     // Fuchsia / Magenta
+export const TARGET_COLORS = ['#FF4500', '#FFFF00', '#FFA500', '#FF1493']; // OrangeRed, Yellow, Orange, DeepPink
 
 interface SceneProps {
   vectors: Vector3[];
-  target: Vector3;
+  targetVectors: Vector3[];
   autoRotate: boolean;
   resetTrigger: number;
 }
 
-function Scene({ vectors, target, autoRotate, resetTrigger }: SceneProps) {
+function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps) {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -52,41 +53,77 @@ function Scene({ vectors, target, autoRotate, resetTrigger }: SceneProps) {
       />
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
-      <axesHelper args={[5]} />
+      
+      
+      {/* Thick Axes for Projector Visibility */}
+      <ThickAxes length={5} thickness={0.02} /> {/* Further reduced thickness */}
       <AxisLabels />
       
       {/* Basis Vectors */}
       {vectors.map((v, i) => (
         <VectorArrow 
-          key={i} 
+          key={`basis-${i}`} 
           end={v} 
           color={BASIS_VECTOR_COLOR} 
           label={`v${i+1}`} 
         />
       ))}
       
-      {/* Target Vector */}
-      <VectorArrow 
-        end={target} 
-        color={TARGET_VECTOR_COLOR} 
-        label="target" 
-      />
+      {/* Target Vectors */}
+      {targetVectors.map((v, i) => {
+         const color = TARGET_COLORS[i % TARGET_COLORS.length];
+         return (
+            <group key={`target-${i}`}>
+                <VectorArrow 
+                  end={v} 
+                  color={color} 
+                  label={`b${i+1}`} 
+                />
+                <ProjectionLine 
+                  basisVectors={vectors} 
+                  targetVector={v} 
+                  color={color}
+                />
+            </group>
+         );
+      })}
       
       {/* Span Visualization */}
       <SpanVisualizer vectors={vectors} color={SPAN_VIS_COLOR} />
-
-      {/* Projection Line for Target Vector */}
-      <ProjectionLine basisVectors={vectors} targetVector={target} />
     </>
   );
 }
 
+// Custom Thick Axes Component
+function ThickAxes({ length, thickness }: { length: number, thickness: number }) {
+    return (
+        <group>
+            {/* X Axis (Red) */}
+            <mesh position={[length/2, 0, 0]} rotation={[0, 0, -Math.PI/2]}>
+                <cylinderGeometry args={[thickness, thickness, length, 16]} />
+                <meshBasicMaterial color="#ff4444" />
+            </mesh>
+            {/* Y Axis (Green) */}
+            <mesh position={[0, length/2, 0]}>
+                <cylinderGeometry args={[thickness, thickness, length, 16]} />
+                <meshBasicMaterial color="#44ff44" />
+            </mesh>
+            {/* Z Axis (Blue) */}
+            <mesh position={[0, 0, length/2]} rotation={[Math.PI/2, 0, 0]}>
+                <cylinderGeometry args={[thickness, thickness, length, 16]} />
+                <meshBasicMaterial color="#4444ff" />
+            </mesh>
+        </group>
+    );
+}
+
 function App() {
+  const { t } = useLanguage();
   const [vectors, setVectors] = useState<Vector3[]>([
     [2, 0, 0], 
     [0, 2, 0]
   ]);
-  const [targetVector, setTargetVector] = useState<Vector3>([1, 1, 1]);
+  const [targetVectors, setTargetVectors] = useState<Vector3[]>([[1, 1, 1]]);
   const [autoRotate, setAutoRotate] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -108,14 +145,14 @@ function App() {
           <color attach="background" args={['#1a1a1a']} />
           <Scene 
             vectors={vectors} 
-            target={targetVector} 
+            targetVectors={targetVectors} 
             autoRotate={autoRotate}
             resetTrigger={resetTrigger}
           />
         </Canvas>
         
         <div style={{ position: 'absolute', top: 20, left: 20, color: 'white', pointerEvents: 'none', fontFamily: 'sans-serif', zIndex: 10 }}>
-          <h1 style={{ margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '24px' }}>Linear Vis</h1>
+          <h1 style={{ margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '24px' }}>LinVis</h1>
         </div>
         
         {/* Overlay for mobile */}
@@ -130,8 +167,8 @@ function App() {
          <Sidebar 
             vectors={vectors} 
             setVectors={setVectors} 
-            targetVector={targetVector} 
-            setTargetVector={setTargetVector}
+            targetVectors={targetVectors} 
+            setTargetVectors={setTargetVectors}
             autoRotate={autoRotate}
             onToggleRotate={() => setAutoRotate(!autoRotate)}
             onResetView={() => setResetTrigger(t => t + 1)}

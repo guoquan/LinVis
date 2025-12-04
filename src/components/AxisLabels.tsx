@@ -2,8 +2,8 @@ import { Html } from '@react-three/drei';
 
 export function AxisLabels() {
   const containerStyle = {
-    background: 'rgba(0,0,0,0.8)', // Increased opacity
-    padding: '5px', // Slightly more padding
+    background: 'rgba(0,0,0,0.4)', // More transparent
+    padding: '3px', // Less padding
     borderRadius: '4px',
     pointerEvents: 'none' as const,
     userSelect: 'none' as const,
@@ -11,30 +11,30 @@ export function AxisLabels() {
     flexDirection: 'column' as const,
     alignItems: 'center',
     fontFamily: 'monospace',
-    fontSize: '14px', // Increased font size
-    lineHeight: '1.2',
+    fontSize: '10px', // Smaller font size
+    lineHeight: '1.1',
     color: 'white',
-    border: '1px solid rgba(255,255,255,0.2)',
+    border: 'none', // No border
   };
 
   const labelStyle = {
     fontWeight: 'bold',
-    marginBottom: '3px', // More space
-    fontSize: '16px', // Increased font size
+    marginBottom: '1px', // Less space
+    fontSize: '12px', // Smaller font size
   };
 
   const vectorStyle = {
     display: 'flex',
     flexDirection: 'column' as const,
     alignItems: 'center',
-    borderLeft: '1px solid #aaa',
-    borderRight: '1px solid #aaa',
-    padding: '0 5px', // More padding
-    borderRadius: '4px', // slightly curved brackets look
+    borderLeft: '1px solid #666', // Lighter brackets
+    borderRight: '1px solid #666',
+    padding: '1px 3px', // Less padding
+    borderRadius: '6px', // Slightly smaller radius
   };
 
   const renderLabel = (name: string, color: string, val: [number, number, number]) => (
-    <div style={{ ...containerStyle, borderColor: color }}>
+    <div style={{ ...containerStyle, color }}>
       <div style={{ ...labelStyle, color }}>{name}</div>
       <div style={vectorStyle}>
         {val.map((n, i) => <span key={i}>{n}</span>)}
