@@ -1,6 +1,9 @@
 import { Html } from '@react-three/drei';
 
-export function AxisLabels() {
+export function AxisLabels({ fontSize = 0.8 }: { fontSize?: number }) {
+  const baseSize = 12 * fontSize;
+  const smallSize = 10 * fontSize;
+
   const containerStyle = {
     background: 'rgba(0,0,0,0.4)', // More transparent
     padding: '3px', // Less padding
@@ -11,7 +14,7 @@ export function AxisLabels() {
     flexDirection: 'column' as const,
     alignItems: 'center',
     fontFamily: 'monospace',
-    fontSize: '10px', // Smaller font size
+    fontSize: `${smallSize}px`, // Scaled
     lineHeight: '1.1',
     color: 'white',
     border: 'none', // No border
@@ -20,7 +23,7 @@ export function AxisLabels() {
   const labelStyle = {
     fontWeight: 'bold',
     marginBottom: '1px', // Less space
-    fontSize: '12px', // Smaller font size
+    fontSize: `${baseSize}px`, // Scaled
   };
 
   const vectorStyle = {

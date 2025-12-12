@@ -142,7 +142,7 @@ export function getBasis(vectors: Vector3[]): Vector3[] {
 
 // Solves A * x = b for x, where A's columns are 'basis'
 // Assumes solution exists.
-function solveSystem(basis: Vector3[], target: Vector3): number[] | null {
+export function solveSystem(basis: Vector3[], target: Vector3): number[] | null {
     // Create augmented matrix [Columns | target]
     // But our rank function expects ROWS. 
     // Let's work with rows: 
@@ -207,9 +207,6 @@ function solveSystem(basis: Vector3[], target: Vector3): number[] | null {
     // The first k columns should form an identity submatrix (with potentially zero rows at bottom).
     // The variables x_0 ... x_{k-1} correspond to cols 0 ... k-1.
     
-    // Check consistency? We assumed it exists.
-    // Read off values.
-    
     const solution = new Array(numVars).fill(0);
     // For each variable column, find the pivot 1
     for(let c=0; c<numVars; c++) {
@@ -230,4 +227,76 @@ function solveSystem(basis: Vector3[], target: Vector3): number[] | null {
     }
     
     return solution;
+}
+
+export function getProjection(basisVectors: Vector3[], targetVector: Vector3): Vector3 | null {
+    const rank = calculateRank(basisVectors);
+    
+    if (rank === 0) return [0, 0, 0];
+
+    // Case Rank 1: Line
+    if (rank === 1) {
+        const firstNonZero = basisVectors.find(v => Math.sqrt(v[0]**2 + v[1]**2 + v[2]**2) > 1e-5);
+        if (!firstNonZero) return null;
+        
+        // dot product manually
+        const u = [...firstNonZero];
+        const len = Math.sqrt(u[0]**2 + u[1]**2 + u[2]**2);
+        u[0] /= len; u[1] /= len; u[2] /= len;
+        
+        const dot = targetVector[0]*u[0] + targetVector[1]*u[1] + targetVector[2]*u[2];
+        return [u[0]*dot, u[1]*dot, u[2]*dot];
+    }
+
+    // Case Rank 2: Plane
+    if (rank === 2) {
+        // Find two independent vectors
+        const basis = getBasis(basisVectors);
+        if (basis.length < 2) return null;
+
+        const v1 = basis[0];
+        const v2 = basis[1];
+        
+        // Cross product v1 x v2
+        const nx = v1[1]*v2[2] - v1[2]*v2[1];
+        const ny = v1[2]*v2[0] - v1[0]*v2[2];
+        const nz = v1[0]*v2[1] - v1[1]*v2[0];
+        
+        const nLen = Math.sqrt(nx**2 + ny**2 + nz**2);
+        const norm = [nx/nLen, ny/nLen, nz/nLen];
+        
+        // Project target onto normal
+        const dist = targetVector[0]*norm[0] + targetVector[1]*norm[1] + targetVector[2]*norm[2];
+        const perp = [norm[0]*dist, norm[1]*dist, norm[2]*dist];
+        
+        return [
+            targetVector[0] - perp[0],
+            targetVector[1] - perp[1],
+            targetVector[2] - perp[2]
+        ];
+    }
+    
+    // Rank 3: Space (Identity)
+    if (rank === 3) {
+        return [...targetVector];
+    }
+
+    return null;
+}
+
+export function getCoordinates(basisVectors: Vector3[], targetVector: Vector3): { coordinates: number[], basisUsed: Vector3[] } | null {
+    const basis = getBasis(basisVectors);
+    if (basis.length === 0) return null;
+
+    // 1. Get projection of target onto basis span
+    const projection = getProjection(basis, targetVector);
+    if (!projection) return null;
+
+    // 2. Solve basis * x = projection
+    const solution = solveSystem(basis, projection);
+    
+    if (solution) {
+        return { coordinates: solution, basisUsed: basis };
+    }
+    return null;
 }

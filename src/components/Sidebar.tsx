@@ -9,13 +9,19 @@ interface SidebarProps {
   setTargetVectors: (v: Vector3[]) => void;
   autoRotate: boolean;
   onToggleRotate: () => void;
+  showCoordinates: boolean;
+  onToggleCoordinates: () => void;
+  fontSize: number;
+  onFontSizeChange: (size: number) => void;
   onResetView: () => void;
   onClose?: () => void;
 }
 
 export function Sidebar({ 
   vectors, setVectors, targetVectors, setTargetVectors,
-  autoRotate, onToggleRotate, onResetView, onClose 
+  autoRotate, onToggleRotate, showCoordinates, onToggleCoordinates,
+  fontSize, onFontSizeChange,
+  onResetView, onClose 
 }: SidebarProps) {
   const { t, language, setLanguage } = useLanguage();
   const rank = calculateRank(vectors);
@@ -184,10 +190,29 @@ export function Sidebar({
       </div>
       
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px', marginBottom: '8px' }}>
             <input type="checkbox" checked={autoRotate} onChange={onToggleRotate} style={{ marginRight: '8px' }} />
             {t('autoRotate')}
         </label>
+        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px' }}>
+            <input type="checkbox" checked={showCoordinates} onChange={onToggleCoordinates} style={{ marginRight: '8px' }} />
+            {t('showCoordinates')}
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>
+          {t('fontSize')}: {fontSize.toFixed(1)}
+        </label>
+        <input 
+          type="range"
+          min="0.2"
+          max="3.0"
+          step="0.1"
+          value={fontSize}
+          onChange={(e) => onFontSizeChange(parseFloat(e.target.value))}
+          style={{ width: '100%' }}
+        />
       </div>
 
       {/* Analysis Results */}

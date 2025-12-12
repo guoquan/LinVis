@@ -33,6 +33,7 @@
   position: relative;
   border-left: 1px solid #444;
   transition: transform 0.3s ease;
+  transform: none; /* Ensure visible on desktop */
 }
 
 /* Toggle Button (Hidden on Desktop usually, but we can keep it if we want collapsible sidebar) */
@@ -54,7 +55,7 @@
 }
 
 /* Mobile / Tablet Styles */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .sidebar-container {
     position: absolute;
     top: 0;

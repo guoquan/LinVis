@@ -63,12 +63,12 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={color} opacity={0.6} transparent linewidth={4} /> {/* Increased linewidth */}
+                <lineBasicMaterial color={color} opacity={0.9} transparent linewidth={4} /> {/* Increased opacity */}
             </lineSegments>
             {/* Semi-transparent backing plane */}
             <mesh quaternion={planeQuat}>
                 <planeGeometry args={[100, 100]} />
-                <meshStandardMaterial color={color} opacity={0.15} transparent side={THREE.DoubleSide} depthWrite={false} />
+                <meshBasicMaterial color={color} opacity={0.3} transparent side={THREE.DoubleSide} depthWrite={false} />
             </mesh>
           </group>
       );
@@ -115,7 +115,7 @@ export function SpanVisualizer({ vectors, color = SPAN_VIS_COLOR }: SpanVisualiz
       return (
           <group>
             <lineSegments geometry={geometry}>
-                <lineBasicMaterial color={color} opacity={0.3} transparent linewidth={3} /> {/* Increased linewidth */}
+                <lineBasicMaterial color={color} opacity={0.5} transparent linewidth={3} /> {/* Increased linewidth */}
             </lineSegments>
           </group>
       );

@@ -6,6 +6,7 @@ import { VectorArrow } from './components/VectorArrow';
 import { Sidebar } from './components/Sidebar';
 import { SpanVisualizer } from './components/SpanVisualizer';
 import { ProjectionLine } from './components/ProjectionLine';
+import { CoordinateVisualizer } from './components/CoordinateVisualizer';
 import { AxisLabels } from './components/AxisLabels';
 import { type Vector3 } from './utils/linearAlgebra';
 import { useLanguage } from './contexts/LanguageContext';
@@ -13,17 +14,19 @@ import './App.css';
 
 // Define color constants for better visibility on projectors
 export const BASIS_VECTOR_COLOR = '#00FFFF'; // Aqua / Cyan
-export const SPAN_VIS_COLOR = '#FF00FF';     // Fuchsia / Magenta
-export const TARGET_COLORS = ['#FF4500', '#FFFF00', '#FFA500', '#FF1493']; // OrangeRed, Yellow, Orange, DeepPink
+export const SPAN_VIS_COLOR = '#00BFFF';     // Deep Sky Blue (No Red)
+export const TARGET_COLORS = ['#FFFF00', '#39FF14', '#FFFFFF', '#FFA500']; // Yellow, Neon Green, White, Orange
 
 interface SceneProps {
   vectors: Vector3[];
   targetVectors: Vector3[];
   autoRotate: boolean;
   resetTrigger: number;
+  showCoordinates: boolean;
+  fontSize: number; // Add fontSize prop
 }
 
-function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps) {
+function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinates, fontSize }: SceneProps) {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -57,7 +60,7 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps)
       
       {/* Thick Axes for Projector Visibility */}
       <ThickAxes length={5} thickness={0.02} /> {/* Further reduced thickness */}
-      <AxisLabels />
+      <AxisLabels fontSize={fontSize} />
       
       {/* Basis Vectors */}
       {vectors.map((v, i) => (
@@ -66,6 +69,7 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps)
           end={v} 
           color={BASIS_VECTOR_COLOR} 
           label={`v${i+1}`} 
+          fontSize={fontSize}
         />
       ))}
       
@@ -78,12 +82,21 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps)
                   end={v} 
                   color={color} 
                   label={`b${i+1}`} 
+                  fontSize={fontSize}
                 />
                 <ProjectionLine 
                   basisVectors={vectors} 
                   targetVector={v} 
                   color={color}
                 />
+                {showCoordinates && (
+                  <CoordinateVisualizer 
+                    basisVectors={vectors} 
+                    targetVector={v} 
+                    color={color} 
+                    fontSize={fontSize} // Pass fontSize
+                  />
+                )}
             </group>
          );
       })}
@@ -98,20 +111,20 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger }: SceneProps)
 function ThickAxes({ length, thickness }: { length: number, thickness: number }) {
     return (
         <group>
-            {/* X Axis (Red) */}
+            {/* X Axis (Replaced Red with Gold/Yellow for projector safety) */}
             <mesh position={[length/2, 0, 0]} rotation={[0, 0, -Math.PI/2]}>
                 <cylinderGeometry args={[thickness, thickness, length, 16]} />
-                <meshBasicMaterial color="#ff4444" />
+                <meshBasicMaterial color="#FFD700" />
             </mesh>
-            {/* Y Axis (Green) */}
+            {/* Y Axis (Bright Green) */}
             <mesh position={[0, length/2, 0]}>
                 <cylinderGeometry args={[thickness, thickness, length, 16]} />
-                <meshBasicMaterial color="#44ff44" />
+                <meshBasicMaterial color="#39FF14" />
             </mesh>
-            {/* Z Axis (Blue) */}
+            {/* Z Axis (Bright Blue) */}
             <mesh position={[0, 0, length/2]} rotation={[Math.PI/2, 0, 0]}>
                 <cylinderGeometry args={[thickness, thickness, length, 16]} />
-                <meshBasicMaterial color="#4444ff" />
+                <meshBasicMaterial color="#1E90FF" />
             </mesh>
         </group>
     );
@@ -125,8 +138,23 @@ function App() {
   ]);
   const [targetVectors, setTargetVectors] = useState<Vector3[]>([[1, 1, 1]]);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [showCoordinates, setShowCoordinates] = useState(false);
+  const [fontSize, setFontSize] = useState(0.8); // Default font size
   const [resetTrigger, setResetTrigger] = useState(0);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 600;
+      setIsMobile(mobile);
+      // If switching to desktop, ensure sidebar is effectively "open" (visible)
+      // We don't need to set isSidebarOpen(true) because we handle transform logic below
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="app-container">
@@ -135,19 +163,22 @@ function App() {
         className="menu-btn"
         onClick={() => setSidebarOpen(true)}
         aria-label="Open Settings"
+        style={{ display: isMobile ? 'block' : 'none' }}
       >
         ☰
       </button>
 
       {/* 3D Viewport */}
       <div className="canvas-container">
-        <Canvas camera={{ position: [6, 6, 4], fov: 50, up: [0, 0, 1] }}>
+        <Canvas camera={{ position: [6, 6, 4], fov: 35, up: [0, 0, 1] }}>
           <color attach="background" args={['#1a1a1a']} />
           <Scene 
             vectors={vectors} 
             targetVectors={targetVectors} 
             autoRotate={autoRotate}
+            showCoordinates={showCoordinates}
             resetTrigger={resetTrigger}
+            fontSize={fontSize}
           />
         </Canvas>
         
@@ -163,7 +194,13 @@ function App() {
       </div>
       
       {/* Sidebar */}
-      <div className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
+      <div 
+        className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}
+        style={{
+             transform: !isMobile ? 'none' : (isSidebarOpen ? 'translateX(0)' : 'translateX(100%)'),
+             position: !isMobile ? 'relative' : 'absolute' // Ensure correct positioning
+        }}
+      >
          <Sidebar 
             vectors={vectors} 
             setVectors={setVectors} 
@@ -171,6 +208,10 @@ function App() {
             setTargetVectors={setTargetVectors}
             autoRotate={autoRotate}
             onToggleRotate={() => setAutoRotate(!autoRotate)}
+            showCoordinates={showCoordinates}
+            onToggleCoordinates={() => setShowCoordinates(!showCoordinates)}
+            fontSize={fontSize}
+            onFontSizeChange={setFontSize}
             onResetView={() => setResetTrigger(t => t + 1)}
             onClose={() => setSidebarOpen(false)}
          />

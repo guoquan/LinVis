@@ -73,15 +73,15 @@ export function ProjectionLine({ basisVectors, targetVector, color = '#ffff00' }
         <Line
         points={[targetVector, projection.toArray()]} // Line from target to its projection
         color={color} 
-        lineWidth={2} 
+        lineWidth={4} 
         dashed={true}
         dashScale={1}
-        dashSize={0.2}
-        gapSize={0.1}
+        dashSize={0.1}
+        gapSize={0.05}
         />
         {/* Marker at the foot of the perpendicular */}
         <mesh position={projection}>
-            <sphereGeometry args={[0.05, 16, 16]} /> {/* Reduced radius */}
+            <sphereGeometry args={[0.08, 16, 16]} /> {/* Reduced radius */}
             <meshBasicMaterial color={color} />
         </mesh>
     </group>

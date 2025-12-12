@@ -7,9 +7,10 @@ interface VectorArrowProps {
   end: [number, number, number];
   color?: string; // Will be BASIS_VECTOR_COLOR or TARGET_VECTOR_COLOR
   label?: string;
+  fontSize?: number;
 }
 
-export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }: VectorArrowProps) {
+export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label, fontSize = 0.8 }: VectorArrowProps) {
   const startVec = useMemo(() => new THREE.Vector3(...start), [start]);
   const endVec = useMemo(() => new THREE.Vector3(...end), [end]);
   
@@ -31,23 +32,27 @@ export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }
   if (length < 0.0001) return null;
 
   // Visual configuration (Fixed thickness for consistency)
-  const headLength = 0.4; 
-  const headWidth = 0.2; 
+  const headLength = 0.3; 
+  const headWidth = 0.06; 
   const shaftLength = Math.max(0, length - headLength);
-  const shaftRadius = 0.04; 
+  const shaftRadius = 0.03; 
+  
+  const baseFontSize = 14; // px
+  const currentFontSize = baseFontSize * fontSize;
+  const smallFontSize = 12 * fontSize;
 
   return (
     <group position={start} quaternion={quaternion}>
       {/* Shaft */}
       <mesh position={[0, shaftLength / 2, 0]}>
         <cylinderGeometry args={[shaftRadius, shaftRadius, shaftLength, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshBasicMaterial color={color} />
       </mesh>
 
       {/* Head */}
       <mesh position={[0, shaftLength + headLength / 2, 0]}>
         <coneGeometry args={[headWidth, headLength, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshBasicMaterial color={color} />
       </mesh>
 
       {/* Label */}
@@ -68,7 +73,7 @@ export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }
                 background: 'rgba(0,0,0,0.6)',
                 padding: '0 4px',
                 borderRadius: '2px',
-                fontSize: '14px'
+                fontSize: `${currentFontSize}px`
             }}>{label}</div>
             
             <div style={{
@@ -82,7 +87,7 @@ export function VectorArrow({ start = [0, 0, 0], end, color = '#00FFFF', label }
                 background: 'rgba(0,0,0,0.7)',
                 fontFamily: 'monospace',
                 color: '#fff',
-                fontSize: '12px',
+                fontSize: `${smallFontSize}px`,
                 lineHeight: '1.2'
             }}>
                <span>{parseFloat((end[0] - start[0]).toFixed(2))}</span>
