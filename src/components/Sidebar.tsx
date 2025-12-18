@@ -1,4 +1,4 @@
-import { calculateRank, isLinearlyIndependent, isInSpan, getDependencyRelations, type Vector3 } from '../utils/linearAlgebra';
+import { calculateRank, isLinearlyIndependent, isInSpan, getDependencyRelations, gramSchmidt, type Vector3 } from '../utils/linearAlgebra';
 import { useLanguage } from '../contexts/LanguageContext';
 import { TARGET_COLORS } from '../App';
 
@@ -255,12 +255,25 @@ export function Sidebar({
       <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ fontSize: '16px', margin: 0, color: '#4488ff' }}>{t('basisVectors')}</h3>
-          <button 
-            onClick={handleAddVector}
-            style={{ background: '#4488ff', border: 'none', color: 'white', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            {t('addCol')}
-          </button>
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <button
+                onClick={() => {
+                    const orthogonal = gramSchmidt(vectors);
+                    // Add orthogonal vectors to target vectors to visualize them
+                    setTargetVectors([...targetVectors, ...orthogonal]);
+                }}
+                style={{ background: '#22cc88', border: 'none', color: 'white', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                title={t('gramSchmidt')}
+            >
+                {t('orthogonalize')}
+            </button>
+            <button 
+                onClick={handleAddVector}
+                style={{ background: '#4488ff', border: 'none', color: 'white', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}
+            >
+                {t('addCol')}
+            </button>
+          </div>
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'row', gap: '15px', overflowX: 'auto', paddingBottom: '10px', alignItems: 'flex-start' }}>

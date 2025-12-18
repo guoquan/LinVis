@@ -229,6 +229,46 @@ export function solveSystem(basis: Vector3[], target: Vector3): number[] | null 
     return solution;
 }
 
+/**
+ * Performs Gram-Schmidt orthogonalization on the given vectors.
+ * Returns the orthogonal basis vectors.
+ */
+export function gramSchmidt(vectors: Vector3[]): Vector3[] {
+    const orthogonalBasis: Vector3[] = [];
+
+    for (const v of vectors) {
+        let u = [...v] as Vector3; // Start with the original vector
+
+        // Subtract projections onto existing orthogonal basis vectors
+        for (const basisVec of orthogonalBasis) {
+             // Calculate projection of v onto basisVec
+             // proj_b(v) = (v . b) / (b . b) * b
+             const dotProduct = u[0]*basisVec[0] + u[1]*basisVec[1] + u[2]*basisVec[2];
+             const basisNormSq = basisVec[0]**2 + basisVec[1]**2 + basisVec[2]**2;
+             
+             if (basisNormSq > 1e-9) {
+                 const scalar = dotProduct / basisNormSq;
+                 u[0] -= scalar * basisVec[0];
+                 u[1] -= scalar * basisVec[1];
+                 u[2] -= scalar * basisVec[2];
+             }
+        }
+        
+        // If u is not the zero vector (meaning v was linearly independent), add it
+        const norm = Math.sqrt(u[0]**2 + u[1]**2 + u[2]**2);
+        if (norm > 1e-6) {
+            orthogonalBasis.push(u);
+        } else {
+             // If it depends on previous vectors, it becomes 0.
+             // We generally only keep non-zero vectors for a basis.
+             // But to keep correspondence with input if possible, we could keep 0?
+             // Usually Gram-Schmidt returns a basis for the Span, so we skip 0s.
+        }
+    }
+    
+    return orthogonalBasis;
+}
+
 export function getProjection(basisVectors: Vector3[], targetVector: Vector3): Vector3 | null {
     const rank = calculateRank(basisVectors);
     

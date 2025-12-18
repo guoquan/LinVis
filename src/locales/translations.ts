@@ -24,7 +24,9 @@ export const translations = {
     instruction2: "Red vector is the target b.",
     instruction3: "Magenta shape represents the Span(A).",
     instruction4: "Drag to rotate, Scroll to zoom.",
-    emptyMatrix: "Empty Matrix"
+    emptyMatrix: "Empty Matrix",
+    gramSchmidt: "Gram-Schmidt Orthogonalization",
+    orthogonalize: "Orthogonalize"
   },
   zh: {
     appTitle: "LinVis",
@@ -51,7 +53,9 @@ export const translations = {
     instruction2: "红色箭头为目标向量 b。",
     instruction3: "品红色形状代表 A 的张成空间 Span(A)。",
     instruction4: "拖拽旋转视角，滚轮缩放。",
-    emptyMatrix: "空矩阵"
+    emptyMatrix: "空矩阵",
+    gramSchmidt: "施密特正交化",
+    orthogonalize: "正交化"
   }
 };
 
