@@ -1,4 +1,4 @@
-import { calculateRank, isLinearlyIndependent, isInSpan, getDependencyRelations, gramSchmidt, type Vector3 } from '../utils/linearAlgebra';
+import { calculateRank, isLinearlyIndependent, isInSpan, getDependencyRelations, type Vector3 } from '../utils/linearAlgebra';
 import { useLanguage } from '../hooks/useLanguage';
 import { TARGET_COLORS } from '../constants/colors';
 
@@ -11,6 +11,8 @@ interface SidebarProps {
   onToggleRotate: () => void;
   showCoordinates: boolean;
   onToggleCoordinates: () => void;
+  showGramSchmidt: boolean;
+  onToggleGramSchmidt: () => void;
   fontSize: number;
   onFontSizeChange: (size: number) => void;
   onResetView: () => void;
@@ -20,6 +22,7 @@ interface SidebarProps {
 export function Sidebar({ 
   vectors, setVectors, targetVectors, setTargetVectors,
   autoRotate, onToggleRotate, showCoordinates, onToggleCoordinates,
+  showGramSchmidt, onToggleGramSchmidt,
   fontSize, onFontSizeChange,
   onResetView, onClose 
 }: SidebarProps) {
@@ -194,9 +197,13 @@ export function Sidebar({
             <input type="checkbox" checked={autoRotate} onChange={onToggleRotate} style={{ marginRight: '8px' }} />
             {t('autoRotate')}
         </label>
-        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px', marginBottom: '8px' }}>
             <input type="checkbox" checked={showCoordinates} onChange={onToggleCoordinates} style={{ marginRight: '8px' }} />
             {t('showCoordinates')}
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px' }}>
+            <input type="checkbox" checked={showGramSchmidt} onChange={onToggleGramSchmidt} style={{ marginRight: '8px' }} />
+            {t('gramSchmidt') || 'Gram-Schmidt'}
         </label>
       </div>
 
@@ -256,17 +263,6 @@ export function Sidebar({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ fontSize: '16px', margin: 0, color: '#4488ff' }}>{t('basisVectors')}</h3>
           <div style={{ display: 'flex', gap: '5px' }}>
-            <button
-                onClick={() => {
-                    const orthogonal = gramSchmidt(vectors);
-                    // Add orthogonal vectors to target vectors to visualize them
-                    setTargetVectors([...targetVectors, ...orthogonal]);
-                }}
-                style={{ background: '#22cc88', border: 'none', color: 'white', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
-                title={t('gramSchmidt')}
-            >
-                {t('orthogonalize')}
-            </button>
             <button 
                 onClick={handleAddVector}
                 style={{ background: '#4488ff', border: 'none', color: 'white', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}

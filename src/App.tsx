@@ -6,6 +6,7 @@ import { VectorArrow } from './components/VectorArrow';
 import { Sidebar } from './components/Sidebar';
 import { SpanVisualizer } from './components/SpanVisualizer';
 import { ProjectionLine } from './components/ProjectionLine';
+import { GramSchmidtVisualizer } from './components/GramSchmidtVisualizer';
 import { CoordinateVisualizer } from './components/CoordinateVisualizer';
 import { AxisLabels } from './components/AxisLabels';
 import { type Vector3 } from './utils/linearAlgebra';
@@ -19,10 +20,11 @@ interface SceneProps {
   autoRotate: boolean;
   resetTrigger: number;
   showCoordinates: boolean;
-  fontSize: number; // Add fontSize prop
+  showGramSchmidt: boolean;
+  fontSize: number;
 }
 
-function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinates, fontSize }: SceneProps) {
+function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinates, showGramSchmidt, fontSize }: SceneProps) {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -55,7 +57,7 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinat
       
       
       {/* Thick Axes for Projector Visibility */}
-      <ThickAxes length={5} thickness={0.02} /> {/* Further reduced thickness */}
+      <ThickAxes length={5} thickness={0.02} /> 
       <AxisLabels fontSize={fontSize} />
       
       {/* Basis Vectors */}
@@ -68,6 +70,11 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinat
           fontSize={fontSize}
         />
       ))}
+      
+      {/* Gram-Schmidt Visualization Overlay */}
+      {showGramSchmidt && (
+        <GramSchmidtVisualizer vectors={vectors} fontSize={fontSize} />
+      )}
       
       {/* Target Vectors */}
       {targetVectors.map((v, i) => {
@@ -90,7 +97,7 @@ function Scene({ vectors, targetVectors, autoRotate, resetTrigger, showCoordinat
                     basisVectors={vectors} 
                     targetVector={v} 
                     color={color} 
-                    fontSize={fontSize} // Pass fontSize
+                    fontSize={fontSize} 
                   />
                 )}
             </group>
@@ -135,6 +142,7 @@ function App() {
   const [targetVectors, setTargetVectors] = useState<Vector3[]>([[1, 1, 1]]);
   const [autoRotate, setAutoRotate] = useState(false);
   const [showCoordinates, setShowCoordinates] = useState(false);
+  const [showGramSchmidt, setShowGramSchmidt] = useState(false);
   const [fontSize, setFontSize] = useState(0.8); // Default font size
   const [resetTrigger, setResetTrigger] = useState(0);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -144,8 +152,6 @@ function App() {
     const handleResize = () => {
       const mobile = window.innerWidth <= 600;
       setIsMobile(mobile);
-      // If switching to desktop, ensure sidebar is effectively "open" (visible)
-      // We don't need to set isSidebarOpen(true) because we handle transform logic below
     };
 
     window.addEventListener('resize', handleResize);
@@ -173,6 +179,7 @@ function App() {
             targetVectors={targetVectors} 
             autoRotate={autoRotate}
             showCoordinates={showCoordinates}
+            showGramSchmidt={showGramSchmidt}
             resetTrigger={resetTrigger}
             fontSize={fontSize}
           />
@@ -194,7 +201,7 @@ function App() {
         className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}
         style={{
              transform: !isMobile ? 'none' : (isSidebarOpen ? 'translateX(0)' : 'translateX(100%)'),
-             position: !isMobile ? 'relative' : 'absolute' // Ensure correct positioning
+             position: !isMobile ? 'relative' : 'absolute' 
         }}
       >
          <Sidebar 
@@ -206,6 +213,8 @@ function App() {
             onToggleRotate={() => setAutoRotate(!autoRotate)}
             showCoordinates={showCoordinates}
             onToggleCoordinates={() => setShowCoordinates(!showCoordinates)}
+            showGramSchmidt={showGramSchmidt}
+            onToggleGramSchmidt={() => setShowGramSchmidt(!showGramSchmidt)}
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
             onResetView={() => setResetTrigger(t => t + 1)}
