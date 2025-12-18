@@ -34,12 +34,11 @@ export function ProjectionLine({ basisVectors, targetVector, color = '#ffff00' }
 
     // Case Rank 2: Plane
     if (rank === 2) {
-        let v1 = new THREE.Vector3();
         let v2 = new THREE.Vector3();
         
         const firstNonZero = basisVectors.find(v => new THREE.Vector3(...v).length() > 1e-5);
         if (!firstNonZero) return null; 
-        v1.set(...firstNonZero);
+        const v1 = new THREE.Vector3(...firstNonZero);
 
         let foundV2 = false;
         for (const v of basisVectors) {

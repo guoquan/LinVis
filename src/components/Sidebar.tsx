@@ -1,6 +1,6 @@
 import { calculateRank, isLinearlyIndependent, isInSpan, getDependencyRelations, gramSchmidt, type Vector3 } from '../utils/linearAlgebra';
-import { useLanguage } from '../contexts/LanguageContext';
-import { TARGET_COLORS } from '../App';
+import { useLanguage } from '../hooks/useLanguage';
+import { TARGET_COLORS } from '../constants/colors';
 
 interface SidebarProps {
   vectors: Vector3[];

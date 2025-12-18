@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { calculateRank, getBasis, type Vector3 } from '../utils/linearAlgebra';
-import { SPAN_VIS_COLOR } from '../App'; // Import the color constant
+import { SPAN_VIS_COLOR } from '../constants/colors';
 
 interface SpanVisualizerProps {
   vectors: Vector3[];

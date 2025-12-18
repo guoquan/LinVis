@@ -8,7 +8,7 @@ export function calculateRank(vectors: Vector3[]): number {
     if (vectors.length === 0) return 0;
     
     // Deep copy to avoid modifying input
-    let mat = vectors.map(v => [...v]); 
+    const mat = vectors.map(v => [...v]); 
     const rows = mat.length;
     const cols = 3;
     let rank = 0;
@@ -105,7 +105,7 @@ export function getDependencyRelations(vectors: Vector3[]): string[] {
                     } else {
                         relations.push(`v${i+1} is dependent (complex)`);
                     }
-                } catch (e) {
+                } catch {
                     relations.push(`v${i+1} is dependent`);
                 }
             } else {
@@ -154,9 +154,9 @@ export function solveSystem(basis: Vector3[], target: Vector3): number[] | null 
     const numEqs = 3;
     
     // Augmented matrix: numEqs rows, numVars + 1 columns
-    let mat: number[][] = [];
+    const mat: number[][] = [];
     for(let r=0; r<numEqs; r++) {
-        let row: number[] = [];
+        const row: number[] = [];
         for(let c=0; c<numVars; c++) {
             row.push(basis[c][r]);
         }
@@ -237,7 +237,7 @@ export function gramSchmidt(vectors: Vector3[]): Vector3[] {
     const orthogonalBasis: Vector3[] = [];
 
     for (const v of vectors) {
-        let u = [...v] as Vector3; // Start with the original vector
+        const u = [...v] as Vector3; // Start with the original vector
 
         // Subtract projections onto existing orthogonal basis vectors
         for (const basisVec of orthogonalBasis) {

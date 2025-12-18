@@ -10,6 +10,29 @@ interface CoordinateVisualizerProps {
   fontSize: number;
 }
 
+interface LabelProps {
+  position: [number, number, number];
+  text: string;
+  color: string;
+  fontSize: number;
+}
+
+const Label = ({ position, text, color, fontSize }: LabelProps) => (
+  <Html position={position} center style={{ pointerEvents: 'none' }}>
+    <div style={{
+      color: color,
+      background: 'rgba(0,0,0,0.7)',
+      padding: '2px 6px',
+      borderRadius: '4px',
+      fontSize: `${fontSize * 16}px`, // Scale base font size (16px)
+      fontFamily: 'monospace',
+      border: `1px solid ${color}`
+    }}>
+      {text}
+    </div>
+  </Html>
+);
+
 export function CoordinateVisualizer({ basisVectors, targetVector, color, fontSize }: CoordinateVisualizerProps) {
   const data = useMemo(() => getCoordinates(basisVectors, targetVector), [basisVectors, targetVector]);
 
@@ -20,22 +43,6 @@ export function CoordinateVisualizer({ basisVectors, targetVector, color, fontSi
 
   if (rank === 0) return null;
   
-  const Label = ({ position, text, color }: { position: [number, number, number], text: string, color: string }) => (
-      <Html position={position} center style={{ pointerEvents: 'none' }}>
-          <div style={{
-              color: color,
-              background: 'rgba(0,0,0,0.7)',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              fontSize: `${fontSize * 16}px`, // Scale base font size (16px)
-              fontFamily: 'monospace',
-              border: `1px solid ${color}`
-          }}>
-              {text}
-          </div>
-      </Html>
-  );
-
   // Rank 1: Line
   if (rank === 1) {
     // p = c1 * v1
@@ -55,7 +62,7 @@ export function CoordinateVisualizer({ basisVectors, targetVector, color, fontSi
             dashSize={0.1}
             gapSize={0.05}
          />
-         <Label position={p.clone().multiplyScalar(0.5).toArray()} text={c1.toFixed(2)} color={color} />
+         <Label position={p.clone().multiplyScalar(0.5).toArray()} text={c1.toFixed(2)} color={color} fontSize={fontSize} />
       </group>
     );
   }
@@ -120,8 +127,8 @@ export function CoordinateVisualizer({ basisVectors, targetVector, color, fontSi
                 <sphereGeometry args={[0.06, 16, 16]} />
                 <meshBasicMaterial color={color} />
               </mesh>
-              <Label position={comp1.clone().multiplyScalar(1.05).toArray()} text={c1.toFixed(2)} color={color} />
-              <Label position={comp2.clone().multiplyScalar(1.05).toArray()} text={c2.toFixed(2)} color={color} />
+              <Label position={comp1.clone().multiplyScalar(1.05).toArray()} text={c1.toFixed(2)} color={color} fontSize={fontSize} />
+              <Label position={comp2.clone().multiplyScalar(1.05).toArray()} text={c2.toFixed(2)} color={color} fontSize={fontSize} />
           </group>
       );
   }
@@ -164,9 +171,9 @@ export function CoordinateVisualizer({ basisVectors, targetVector, color, fontSi
              <mesh position={comp2}><sphereGeometry args={[0.06, 16, 16]} /><meshBasicMaterial color={color} /></mesh>
              <mesh position={comp3}><sphereGeometry args={[0.06, 16, 16]} /><meshBasicMaterial color={color} /></mesh>
 
-             <Label position={comp1.clone().multiplyScalar(1.05).toArray()} text={c1.toFixed(2)} color={color} />
-             <Label position={comp2.clone().multiplyScalar(1.05).toArray()} text={c2.toFixed(2)} color={color} />
-             <Label position={comp3.clone().multiplyScalar(1.05).toArray()} text={c3.toFixed(2)} color={color} />
+             <Label position={comp1.clone().multiplyScalar(1.05).toArray()} text={c1.toFixed(2)} color={color} fontSize={fontSize} />
+             <Label position={comp2.clone().multiplyScalar(1.05).toArray()} text={c2.toFixed(2)} color={color} fontSize={fontSize} />
+             <Label position={comp3.clone().multiplyScalar(1.05).toArray()} text={c3.toFixed(2)} color={color} fontSize={fontSize} />
           </group>
       );
   }
